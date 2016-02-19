@@ -12,7 +12,14 @@
         <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
     </head>
     <body ng-controller="MainCtrl">
-        <button ng-click="click()">Click me!</button>
+        <button ng-click="addUser()">Add user</button>
+        <div class="currentUser">
+            <span>{{user.data.image}}</span>
+            <span>{{user.data.name}}</span>
+            <span>{{user.data.points}}</span>
+        </div>
+        <button ng-click="increaseScore()">Increase score</button>
+        <button ng-click="decreaseScore()">Decrease score</button>
         <ul ng-repeat="user in users.list | orderBy: '-points'">
             <li>{{user.image}}</li>
             <li>{{user.name}}</li>
