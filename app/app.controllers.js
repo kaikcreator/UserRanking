@@ -39,7 +39,11 @@ angular.module('userRanking')
                 console.log(error);
             }
         );
-    };    
+    };
+    
+    $scope.forgetUser = function(){
+        $scope.user = null;
+    }
     
     
     usersService.get();

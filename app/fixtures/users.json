@@ -2,37 +2,37 @@
     {
         "id":       "1",
         "name":     "Peter",
-        "image":    "user1.png",
+        "image":    "img/user1.png",
         "points":   150
     },
     {
         "id":       "2",
         "name":     "Mark",
-        "image": 	"user2.png",
+        "image": 	"img/user2.png",
         "points":   315
     },
     {
         "id":       "3",
-        "name":     "John",
-        "image": 	"user3.png",
+        "name":     "Samantha",
+        "image": 	"img/user3.png",
         "points":   135
     },
     {
         "id":       "4",
         "name":     "Marcelus",
-        "image": 	"user4.png",
+        "image": 	"img/user4.png",
         "points":   160
     },
     {
         "id":       "5",
         "name":     "Alex",
-        "image": 	"user5.png",
+        "image": 	"img/user5.png",
         "points":   210
     },
     {
         "id":       "6",
         "name":     "Travis",
-        "image": 	"user6.png",
+        "image": 	"img/user6.png",
         "points":   100
     }    
 ]

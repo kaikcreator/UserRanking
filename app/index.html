@@ -6,40 +6,58 @@
         <title>My AngularJS App</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-        <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-        <link rel="stylesheet" href="app.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/styles.css">
         <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
     </head>
     <body ng-controller="MainCtrl">
-        <button ng-click="addUser()">Add user</button>
-        <div class="currentUser">
-            <span>{{user.data.image}}</span>
-            <span>{{user.data.name}}</span>
-            <span>{{user.data.points}}</span>
-        </div>
-        <button ng-click="increaseScore()">Increase score</button>
-        <button ng-click="decreaseScore()">Decrease score</button>
-        <ul ng-repeat="user in users.list | orderBy: '-points'">
-            <li>{{user.image}}</li>
-            <li>{{user.name}}</li>
-            <li>{{user.points}}</li>
-        </ul>
 
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Users Ranking</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    <li class="list-group-item row v-center-items" ng-repeat="user in users.list | orderBy: '-points'">
+                        <div class="col-xs-3">{{$index}}. - {{user.points}}</div>
+                        <div class="col-xs-6">{{user.name}}</div>
+                        <div class="col-xs-3">
+                            <img ng-src="{{user.image}}"  src="img/default.png" class="img-thumbnail">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-footer">
+                <button ng-if="!user" class="btn btn-success btn-block add-btn" ng-click="addUser()">Add user</button>
+                <div ng-if="user">
+                    <div class="row v-center-items current-user">
+                        <div class="col-xs-3">{{user.data.points}}</div>
+                        <div class="col-xs-6">{{user.data.name}}</div>
+                        <div class="col-xs-3">
+                            <img ng-src="{{user.data.image}}"  src="img/default.png" class="img-thumbnail">
+                        </div>
+                    </div>
+                    <button class="btn btn-success btn-block" ng-click="increaseScore()">Increase score</button>
+                    <button class="btn btn-warning btn-block" ng-click="decreaseScore()">Decrease score</button>
+                    <button class="btn btn-danger btn-block" ng-click="forgetUser()">exit user</button>
+                </div>
+            </div>
+
+        </div>
 
         <script src="bower_components/angular/angular.js"></script>
         <script src="bower_components/angular-route/angular-route.js"></script>
-        
+
         <!-- app files -->
         <script src="services/url/UrlsModule.js"></script>
         <script src="services/users/UsersModule.js"></script>
         <script src="app.js"></script>
         <script src="app.controllers.js"></script>
-        
+
         <!-- mock server -->
         <script src="bower_components/angular-mocks/angular-mocks.js"></script>
         <script src="bower_components/angular-resource/angular-resource.min.js"></script>
         <script src="services/mockServer/MockServerModule.js"></script>        
-        
+
     </body>
 </html>

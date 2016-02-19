@@ -1,0 +1,43 @@
+.panel-primary{
+    border: none;
+    height: 100vh;
+    margin-bottom: 0;
+    position: relative;
+    text-align: center;
+}
+
+.panel-footer{
+    position: absolute;
+    bottom: 0;
+    height: 200px;
+    width: 100%;
+}
+
+.v-center-items{
+    display: flex;
+    align-items: center;
+}
+
+.v-center-items div{
+    text-align: center;
+}
+
+.v-center-items div:first-of-type{
+    font-size: larger;
+    font-weight: 600;
+}
+
+.current-user{
+    margin-bottom: 10px;
+}
+
+.add-btn{
+    transform: translateY(-50%);
+    top: 50%;
+    position: relative;    
+}
+
+img{
+    height: 50px !important;
+    width: 50px;
+}
