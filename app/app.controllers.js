@@ -23,6 +23,7 @@ angular.module('userRanking')
         usersService.updateUserScore($scope.user.data.points + 100)
         .then(
             function(response){
+                usersService.get();
             },
             function(error){
                 console.log(error);
@@ -34,6 +35,7 @@ angular.module('userRanking')
         usersService.updateUserScore($scope.user.data.points - 100)
         .then(
             function(response){
+                usersService.get();
             },
             function(error){
                 console.log(error);

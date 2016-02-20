@@ -17,9 +17,34 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
     "users": "fixtures/users.json"
 })
 
+    .constant('lsMock', {
+    "users": "ls-cached-users",
+    "user": "ls-cached-user",
+})
 
-    .run(['$httpBackend', 'urls', 'fixturePaths', '$resource', function($httpBackend, urls, fixturePaths, $resource){
 
+    .run(['$httpBackend', '$resource', '$window', 'urls', 'fixturePaths', 'lsMock', function($httpBackend, $resource, $window, urls, fixturePaths, lsMock){
+
+
+        /* users object*/
+        var cachedUsers = [];//angular.fromJson($window.localStorage[lsMock.users]);
+        
+        var updatedCachedUsers = function(user){
+            for(var i=0; i<cachedUsers.length; i++){
+                //if user is found, update it and return
+                if(cachedUsers[i].id == user.id){
+                    cachedUsers[i].points = user.points;
+                    return;
+                }
+            }
+            //otherwise push user
+            cachedUsers.push(user);
+        };
+        
+        var saveCachedUsers = function(){
+            //$window.localStorage[lsMock.users] = angular.toJson(cachedUsers);
+        }
+        
 
         /* local calls */
         $httpBackend.whenGET(/fixtures\/.*/).passThrough();
@@ -31,7 +56,11 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
         /*mocked users list*/
         var usersResource = $resource(fixturePaths.users).query();
         $httpBackend.whenGET(urls.users).respond(function(method, url, data, headers){
-            return [200, usersResource];
+            if(!cachedUsers || cachedUsers.length === 0){
+                cachedUsers = usersResource;
+                saveCachedUsers();
+            }
+                return [200, cachedUsers];
         });
 
 
@@ -46,6 +75,8 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                     return [400, null, null];
                 }
                 else{
+                    updatedCachedUsers(data);
+                    saveCachedUsers();
                     return [200, data, {}];
                 }
             });
@@ -60,10 +91,13 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                 }
                 else{
                     var user =     {
-                        "id":       "7",
+                        "id":       ''+ cachedUsers.length,
                         "name":     data.name,
                         "points":   0
                     };
+                    updatedCachedUsers(user);
+                    saveCachedUsers();
+                    
                     return [200, user, {Authorization: "1234567890asdfghjklzxcvbnm"}];
                 }
             });
