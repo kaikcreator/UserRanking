@@ -14,7 +14,7 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
 
 
     .constant('fixturePaths', {
-    "users": "app/fixtures/users.json"
+    "users": "fixtures/users.json"
 })
 
     .constant('lsMock', {
