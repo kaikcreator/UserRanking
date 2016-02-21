@@ -18,42 +18,59 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
 })
 
     .constant('lsMock', {
-    "users": "ls-cached-users",
-    "user": "ls-cached-user",
+    "users": "ls-cached-users"
 })
 
 
-    .run(['$httpBackend', '$resource', '$window', 'urls', 'fixturePaths', 'lsMock', function($httpBackend, $resource, $window, urls, fixturePaths, lsMock){
+    .factory('mockedUsers', ['$window', '$resource', 'fixturePaths', 'lsMock', function($window, $resource, fixturePaths, lsMock){
 
+        var service = {};
 
-        /* users object*/
-        var cachedUsers = angular.fromJson($window.localStorage[lsMock.users]);
-        
-        var updateCachedUsers = function(user){
-            for(var i=0; i<cachedUsers.length; i++){
-                //if user is found, update it and return
-                if(cachedUsers[i].id == user.id){
-                    cachedUsers[i].points = user.points;
+        /* get users from local storage */       
+        service.list = angular.fromJson($window.localStorage[lsMock.users]);
+
+        /* if nothing in LS, initialize from fixtures*/
+        if(!service.list || service.list.length === 0){
+            service.list = $resource(fixturePaths.users).query();
+        }        
+
+        service.save = function(){
+            $window.localStorage[lsMock.users] = angular.toJson(service.list);
+        };
+
+        service.add = function(user){
+            service.list.push(user);
+            service.save();
+        };
+
+        service.update = function(user){
+            for(var i=0; i<service.list.length; i++){
+                //if user is found, update it
+                if(service.list[i].id == user.id){
+                    service.list[i].points = user.points;
+                    service.save();
                     return;
                 }
             }
-            //otherwise push user
-            cachedUsers.push(user);
         };
-        
-        var getUserFromCache = function(userId){
-            for(var i=0; i<cachedUsers.length; i++){
-                if(cachedUsers[i].id == userId){
-                    return cachedUsers[i];
+
+        service.getById = function(userId){
+            for(var i=0; i<service.list.length; i++){
+                if(service.list[i].id == userId){
+                    return service.list[i];
                 }
             }
             return null;            
-        }
-        
-        var saveCachedUsers = function(){
-            $window.localStorage[lsMock.users] = angular.toJson(cachedUsers);
-        }
-        
+        };
+
+
+        return service;
+
+    }])
+
+
+    .run(['$httpBackend', '$resource', 'urls', 'mockedUsers', function($httpBackend, $resource, urls, mockedUsers){
+
 
         /* local calls */
         $httpBackend.whenGET(/fixtures\/.*/).passThrough();
@@ -63,13 +80,8 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
 
 
         /*mocked users list*/
-        var usersResource = $resource(fixturePaths.users).query();
         $httpBackend.whenGET(urls.users).respond(function(method, url, data, headers){
-            if(!cachedUsers || cachedUsers.length === 0){
-                cachedUsers = usersResource;
-                saveCachedUsers();
-            }
-                return [200, cachedUsers];
+            return [200, mockedUsers.list];
         });
 
 
@@ -87,9 +99,8 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                     return [400, null, null];
                 }
                 else{
-                    updateCachedUsers(data);
-                    data = getUserFromCache(userId);
-                    saveCachedUsers();
+                    mockedUsers.update(data);
+                    data = mockedUsers.getById(userId);
                     return [200, data, {}];
                 }
             });
@@ -104,13 +115,13 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                 }
                 else{
                     var user =     {
-                        "id":       ''+ cachedUsers.length,
+                        "id":       ''+ mockedUsers.list.length,
                         "name":     data.name,
                         "points":   0
                     };
-                    updateCachedUsers(user);
-                    saveCachedUsers();
-                    
+                    mockedUsers.add(user);
+
+
                     return [200, user, {Authorization: "1234567890asdfghjklzxcvbnm"}];
                 }
             });
