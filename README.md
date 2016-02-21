@@ -2,6 +2,8 @@
 
 This project is an app to demonstrate how to mock a complex server to integrate our AngularJs app with, in case you need to develop the app and the server is not already developed. The structure is based on angular-seed.
 
+You can try the resulting app here: [http://kaikcreator.github.io/UserRanking/](http://kaikcreator.github.io/UserRanking/)
+
 
 ## Getting Started
 
