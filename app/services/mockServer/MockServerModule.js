@@ -29,18 +29,26 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
         /* users object*/
         var cachedUsers = angular.fromJson($window.localStorage[lsMock.users]);
         
-        var updateCacheAndGetUser = function(user){
+        var updateCachedUsers = function(user){
             for(var i=0; i<cachedUsers.length; i++){
                 //if user is found, update it and return
                 if(cachedUsers[i].id == user.id){
                     cachedUsers[i].points = user.points;
-                    return cachedUsers[i];
+                    return;
                 }
             }
             //otherwise push user
             cachedUsers.push(user);
-            return user;
         };
+        
+        var getUserFromCache = function(userId){
+            for(var i=0; i<cachedUsers.length; i++){
+                if(cachedUsers[i].id == userId){
+                    return cachedUsers[i];
+                }
+            }
+            return null;            
+        }
         
         var saveCachedUsers = function(){
             $window.localStorage[lsMock.users] = angular.toJson(cachedUsers);
@@ -79,7 +87,8 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                     return [400, null, null];
                 }
                 else{
-                    data = updateCacheAndGetUser(data);
+                    updateCachedUsers(data);
+                    data = getUserFromCache(userId);
                     saveCachedUsers();
                     return [200, data, {}];
                 }
@@ -99,7 +108,7 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                         "name":     data.name,
                         "points":   0
                     };
-                    user = updateCacheAndGetUser(user);
+                    updateCachedUsers(user);
                     saveCachedUsers();
                     
                     return [200, user, {Authorization: "1234567890asdfghjklzxcvbnm"}];
