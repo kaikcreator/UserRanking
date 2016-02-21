@@ -1,1 +1,75 @@
-app/index.html
+<!DOCTYPE html>
+<html lang="en" ng-app="userRanking" class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>My AngularJS App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/styles.css">
+        <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body ng-controller="MainCtrl">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title v-center">Users Ranking</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    <li class="list-group-item row v-center-items" ng-repeat="listUser in users.list | orderBy: '-points'"
+                        ng-class="{'highlight-user' : listUser.id == user.data.id}">
+                        <div class="col-xs-3">{{$index +1}} . - {{listUser.points}}</div>
+                        <div class="col-xs-6">{{listUser.name}}</div>
+                        <div class="col-xs-3">
+                            <img ng-src="{{listUser.image}}"  src="img/default.png" class="img-thumbnail">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="panel-footer">
+                <form ng-if="!user" class="v-center form-inline">
+                    <div class="alert alert-danger" role="alert" ng-if="inputs.error">
+                        {{inputs.error}}
+                    </div>
+                    <div class="form-group">
+                        <input ng-model="inputs.username" type="text" placeholder="username" class="form-control">
+                    </div>
+                    <button class="btn btn-success btn-block inline-large" ng-click="addUser()">Add user</button>
+                </form>
+
+                <div ng-if="user">
+                    <div class="row v-center-items current-user">
+                        <div class="col-xs-3">{{user.data.points}}</div>
+                        <div class="col-xs-6">{{user.data.name}}</div>
+                        <div class="col-xs-3">
+                            <img ng-src="{{user.data.image}}"  src="img/default.png" class="img-thumbnail">
+                        </div>
+                    </div>
+                    <button class="btn btn-success btn-block" ng-click="increaseScore()">Increase score</button>
+                    <button class="btn btn-warning btn-block" ng-click="decreaseScore()">Decrease score</button>
+                    <button class="btn btn-danger btn-block" ng-click="forgetUser()">exit user</button>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+
+        <!-- app files -->
+        <script src="services/url/UrlsModule.js"></script>
+        <script src="services/users/UsersModule.js"></script>
+        <script src="app.js"></script>
+        <script src="app.controllers.js"></script>
+
+        <!-- mock server -->
+        <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+        <script src="services/mockServer/MockServerModule.js"></script>        
+
+    </body>
+</html>
+
