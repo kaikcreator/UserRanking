@@ -6,11 +6,19 @@
     text-align: center;
 }
 
+.panel-heading{
+    height: 50px;
+}
 .panel-footer{
     position: absolute;
     bottom: 0;
     height: 200px;
     width: 100%;
+}
+
+.panel-body{
+    height: calc(100% - 50px - 200px);
+    overflow-y: scroll;
 }
 
 .v-center-items{
@@ -31,13 +39,25 @@
     margin-bottom: 10px;
 }
 
-.add-btn{
+.add-user{
     transform: translateY(-50%);
     top: 50%;
     position: relative;    
 }
 
+.highlight-user{
+    background-color: #d9edf7;
+}
+
 img{
     height: 50px !important;
     width: 50px;
+}
+
+@media (min-width: 768px){
+    .inline-large {
+        display: inline-block;
+        width: auto;
+        vertical-align: middle;
+    }
 }

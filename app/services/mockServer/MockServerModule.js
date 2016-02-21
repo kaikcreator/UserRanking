@@ -27,22 +27,23 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
 
 
         /* users object*/
-        var cachedUsers = [];//angular.fromJson($window.localStorage[lsMock.users]);
+        var cachedUsers = angular.fromJson($window.localStorage[lsMock.users]);
         
-        var updatedCachedUsers = function(user){
+        var updateCacheAndGetUser = function(user){
             for(var i=0; i<cachedUsers.length; i++){
                 //if user is found, update it and return
                 if(cachedUsers[i].id == user.id){
                     cachedUsers[i].points = user.points;
-                    return;
+                    return cachedUsers[i];
                 }
             }
             //otherwise push user
             cachedUsers.push(user);
+            return user;
         };
         
         var saveCachedUsers = function(){
-            //$window.localStorage[lsMock.users] = angular.toJson(cachedUsers);
+            $window.localStorage[lsMock.users] = angular.toJson(cachedUsers);
         }
         
 
@@ -67,7 +68,10 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
         /* mock update user*/
         $httpBackend.whenPUT(anyUserUrl).respond(
             function(method, url, data, headers){
+                var userId = url.replace(urls.user(''), '');
                 data = angular.fromJson(data);
+                if(!data.id)
+                    data.id = userId;
                 if(headers['Authorization'] !== "Token 1234567890asdfghjklzxcvbnm"){
                     return [401, null, null];
                 }
@@ -75,7 +79,7 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                     return [400, null, null];
                 }
                 else{
-                    updatedCachedUsers(data);
+                    data = updateCacheAndGetUser(data);
                     saveCachedUsers();
                     return [200, data, {}];
                 }
@@ -95,7 +99,7 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
                         "name":     data.name,
                         "points":   0
                     };
-                    updatedCachedUsers(user);
+                    user = updateCacheAndGetUser(user);
                     saveCachedUsers();
                     
                     return [200, user, {Authorization: "1234567890asdfghjklzxcvbnm"}];
