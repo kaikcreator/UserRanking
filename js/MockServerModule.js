@@ -6,7 +6,7 @@ angular.module('userRanking.mockServerModule', ['ngMockE2E', 'ngResource', 'user
         $delegate.get = function(){
             $timeout(function(){
                 originalGetMethod();
-            },300);
+            },500);
         };
 
         return $delegate;
